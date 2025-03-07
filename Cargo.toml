@@ -1,0 +1,44 @@
+[package]
+name = "octoprism"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+color-eyre = "0.6.3"
+dotenvy = "0.15.7"
+clap = { version = "4.5.31", features = ["derive"] }
+config = "0.15.9"
+enum_dispatch = "0.3.13"
+eyre = "0.6.12"
+octocrab = { version = "0.43.0", features = ["rustls"] }
+regex = "1.11.1"
+rustls = "0.23.23"
+serde = "1.0.218"
+serde_ignored = "0.1.11"
+serde_json = "1.0.140"
+serde_path_to_error = "0.1.17"
+thiserror = "2.0.12"
+tokio = { version = "1.43.0", features = [
+  "rt-multi-thread",
+  "macros",
+  "signal",
+] }
+toml = "0.8.20"
+tracing = "0.1.41"
+tracing-appender = "0.2.3"
+tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+redis = { version = "0.29.1", features = ["tokio-comp", "tokio-rustls-comp"] }
+paste = "1.0.15"
+url = "2.5.4"
+chrono = "0.4.40"
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+complexity = "warn"
+correctness = "deny"
+pedantic = "warn"
+perf = "warn"
+style = "warn"
+suspicious = "deny"
