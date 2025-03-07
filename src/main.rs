@@ -74,14 +74,14 @@ fn main() -> color_eyre::Result<()> {
     tokio::runtime::Builder::new_multi_thread()
         .enable_all()
         .build()?
-        .block_on(async {
+        .block_on( async {
             #[cfg(target_family = "unix")]
             let mut sigterm = signal(SignalKind::terminate())?;
             #[cfg(target_family = "windows")]
             let mut sigterm = ctrl_close()?;
 
             tokio::select! {
-                result = run() => result,
+                result = run(config) => result,
                 _ = sigterm.recv() => {
                     handle_shutdown("Received SIGTERM");
                     std::process::exit(0);
@@ -94,7 +94,7 @@ fn main() -> color_eyre::Result<()> {
         })
 }
 
-async fn run() -> eyre::Result<()> {
+async fn run(config: Arc<config::Config>) -> eyre::Result<()> {
     use octocrab::{models, params};
 
     let octocrab = octocrab::instance();
@@ -110,14 +110,9 @@ async fn run() -> eyre::Result<()> {
         .into_iter()
         .map(std::convert::Into::<types::PullRequestOrIssue>::into)
     {
-        println!(
-            "Title: {} | Labels: {:?}",
-            item.title().unwrap_or(&String::new()),
-            item.labels()
-                .unwrap_or(&vec![])
-                .iter()
-                .map(|l| &l.name).collect::<Vec<_>>()
-        );
+        for rule in &config.rules {
+            rule.apply(&item).await?;
+        }
     }
 
     // println!("{:#?}", page);

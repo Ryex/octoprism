@@ -1,0 +1,3 @@
+[[rules]]
+condition = { HasLabels = ["bug"] }
+actions = [{ Log = {} }]
